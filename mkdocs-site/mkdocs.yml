@@ -1,7 +1,12 @@
 site_name: Spring
 site_author: Chrysan
 
-theme: material
+theme: 
+  name: material
+  palette:
+    primary: green
 
 nav:
   - home: index.md
+  - daily:
+    - 写在前面: 写在前面.md
