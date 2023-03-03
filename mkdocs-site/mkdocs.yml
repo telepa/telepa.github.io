@@ -1,0 +1,7 @@
+site_name: Spring
+site_author: Chrysan
+
+theme: material
+
+nav:
+  - home: index.md
