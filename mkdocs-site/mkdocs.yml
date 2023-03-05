@@ -7,12 +7,12 @@ theme:
     primary: green
 
 nav:
-  - home: index.md
+  - home: 'index.md'
   - daily:
-    - 写在前面: 写在前面.md
-    - 第四次开学后: 第四次开学后.md
+    - 写在前面: '写在前面.md'
+    - 第四次开学后: '第四次开学后.md'
   - second2th:
-    - ads: ads.md
+    - ads: 'ads.md'
 
 markdown_extensions:
   - pymdownx.arithmatex:
