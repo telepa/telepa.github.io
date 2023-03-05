@@ -34,7 +34,7 @@ second step: left child of A = B
 thrid  step: right subtree of B = T
 ```
 
-![image-20230305125610316](E:\telepa.github.io\mkdocs-site\docs\image\ads\image-20230305125610316.png)
+![image-20230305163454400](image/ads week1/image-20230305163454400.png)
 
 ##### **AVL trees insertion!!!**
 
