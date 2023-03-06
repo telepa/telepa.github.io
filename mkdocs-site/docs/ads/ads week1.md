@@ -1,16 +1,16 @@
 ## ads  week 1
 
-#### AVL Trees
+### AVL Trees
 
-##### Target
+#### Target
 
 speed up searching, insert&query&delete are all $O(ln\space n)$ in one step
 
-##### Tool
+#### Tool
 
 binary search trees
 
-##### Balanced trees
+#### Balanced trees
 
 - empty tree: height balanced, $h$ of $T$ is $-1$
 - no empty binary tree $T$: with $T_L$ and $T_R$
@@ -18,7 +18,7 @@ binary search trees
     - $|h_L-h_R|\leqslant1$ where $h_L$ and $h_R$ are the heights of $h_L$ and $h_R$
     - hint: the balance factor $BF(node)=h_L-h_R$, in an AVL tree, $BF(node)=-1,0,or\space1$
 
-##### **Tree rotation!!!**
+#### **Tree rotation!!!**
 
 - time complexity:  $O(1)$
 
@@ -36,7 +36,7 @@ thrid  step: right subtree of B = T
 
 ![image-20230305163454400](image/ads week1/image-20230305163454400.png)
 
-##### **AVL trees insertion!!!**
+#### **AVL trees insertion!!!**
 
 - $RR\space rotation$  （被旋转的是May（异常节点的儿子），发生的是left rotation，LL rotation同理）
 
@@ -50,7 +50,7 @@ thrid  step: right subtree of B = T
 
         ![image-20230305142408660](image/ads/image-20230305142408660.png)
 
-##### Some analysis
+#### Some analysis
 
 - $n_h$ : the min num of nodes in a height balanced tree of height h
 
@@ -58,13 +58,13 @@ thrid  step: right subtree of B = T
 
     - $n_h=F_{h+2}-1$, $F_{h+2}$ is Fibonacci number, $h=O(ln\space n)$
 
-#### Splay Trees
+### Splay Trees
 
-##### Target
+#### Target
 
 any m consecutive tree operations starting from an empty tree take at most $O(MlogN)$ time            
 
-##### Rotation
+#### Rotation
 
 >  when query/find
 
@@ -78,7 +78,7 @@ for any nonroot node $X$,delete its parent by $P$ and grandparent by $G$
         - 1st  step: rotate $P$ towards $G$
         - 2nd step: rotate $X$ towards $P$
 
-##### Deletions
+#### Deletions
 
 step 1: Find $X$  $\leftarrow$ $X$ will be at the root.
 
@@ -88,15 +88,15 @@ step 3: Find Max ($T_L$)
 
 step 4: Make $T_R$ the right child of the root of Max($T_L$)
 
-#### Amortized Analysis
+### Amortized Analysis
 
-##### Target
+#### Target
 
 Any M consecutive operations take at most $O(MlogN)$ time.
 
 - worst-case bound $\geqslant$ amortized bound $\geqslant$ average-case bound
 
-##### Ways
+#### Ways
 
 1. Aggregate analysis
     - example: Multi-pop
