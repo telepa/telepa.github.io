@@ -22,8 +22,12 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
 ### 冬五周
 
-2023.12.12 周二
+**2023.12.12 周二**
 
 今天试图背了一些tcs的作业题，看了2/3的TM的笔记。
 
 试图两天之内把CV和cache的报告写掉，开始写OS lab5.
+
+
+
+夜深忽梦少年事。
