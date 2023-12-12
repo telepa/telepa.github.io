@@ -15,3 +15,15 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
     docs/
         index.md  # The documentation homepage.
         ...       # Other markdown pages, images and other files.
+
+
+
+## 大三上
+
+### 冬五周
+
+2023.12.12 周二
+
+今天试图背了一些tcs的作业题，看了2/3的TM的笔记。
+
+试图两天之内把CV和cache的报告写掉，开始写OS lab5.
