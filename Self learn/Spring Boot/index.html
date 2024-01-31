@@ -827,7 +827,19 @@
 <li>Web层（Controller层）：实现与web前端的交互</li>
 </ol>
 <p>整个项目主要文件架构如下</p>
-<p><img src="image/Spring Boot/image-20240131225826064.png" alt="image-20240131225826064" style="zoom:50%;" /></p>
+<div class="highlight"><pre><span></span><code>--src
+    --main
+        --java
+            --com.example.myapp
+                --controller
+                --pojo
+                --DAO
+                --service
+                    --impl
+        --resources
+            --mapper
+            ---templates
+</code></pre></div>
 <p>以一个简单的小项目为例，account表中有字段id，user_name与pwd。</p>
 <p>（1）实体层</p>
 <div class="highlight"><pre><span></span><code><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">account</span><span class="w"> </span><span class="p">{</span>
@@ -917,8 +929,8 @@
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>insert失败返回0，成功则返回插入的行数</p>
 </div>
+<p>insert失败返回0，成功则返回插入的行数</p>
 
 
 
