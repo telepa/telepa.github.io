@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>珠玑妙算 - 汉字版</title>
+    <title>每日珠玑 - 经典版</title>
     <style>
         :root {
             --bg-color: #f7f8f9;
             --tile-size: 50px;
             --border-default: #d3d6da;
             
-            /* 颜色定义 */
+            /* 经典的颜色定义 */
             --c-red: #e74c3c;
             --c-yellow: #f1c40f;
             --c-blue: #3498db;
@@ -33,11 +33,11 @@
             overflow: hidden;
         }
 
-        /* === 1. 顶部 Header (增加重开按钮) === */
+        /* === 1. 顶部 Header (经典样式) === */
         header {
             background: #fff;
             border-bottom: 1px solid #eee;
-            height: 50px;
+            height: 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -46,20 +46,30 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        h1 { font-size: 18px; font-weight: 800; color: #2c3e50; }
-        
-        /* 顶部按钮样式 */
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 { font-size: 18px; font-weight: 800; color: #2c3e50; line-height: 1.2; }
+        .date-tag { font-size: 11px; color: #95a5a6; font-weight: bold; background: #eee; padding: 2px 6px; border-radius: 4px; display: inline-block; width: fit-content; margin-top: 2px;}
+
+        /* 倒计时区域 */
+        .timer-container {
+            font-size: 12px;
+            color: #e67e22;
+            font-weight: bold;
+            text-align: right;
+        }
+        .timer-val { font-family: monospace; font-size: 14px; }
+
         .header-btn {
-            font-size: 14px;
+            font-size: 20px;
             color: #3498db;
             cursor: pointer;
-            padding: 5px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            margin-left: 10px;
         }
-        .header-btn:active { opacity: 0.6; }
 
         /* === 2. 颜色图例 === */
         #legend-bar {
@@ -73,7 +83,6 @@
             border-bottom: 1px solid #eee;
             flex-shrink: 0;
         }
-        .legend-list span { font-weight: bold; margin: 0 1px; }
 
         /* === 3. 游戏历史区域 === */
         #board-container {
@@ -87,7 +96,7 @@
 
         .row {
             display: flex;
-            align-items: center; /* 垂直居中 */
+            align-items: center;
             gap: 6px;
             margin-bottom: 8px;
             opacity: 0;
@@ -95,7 +104,6 @@
         }
         @keyframes fadeIn { to { opacity: 1; } }
 
-        /* 序号显示 */
         .row-index {
             width: 25px;
             text-align: right;
@@ -105,7 +113,7 @@
             margin-right: 5px;
         }
 
-        /* 汉字方块 */
+        /* 经典汉字方块 */
         .tile {
             width: var(--tile-size);
             height: var(--tile-size);
@@ -129,7 +137,6 @@
         .t-黑 { color: var(--c-black); border-color: var(--c-black); background: #f2f3f4; }
         .t-白 { color: var(--c-white); border-color: #bdc3c7; background: #fff; }
 
-        /* 结果展示 */
         .result-box {
             height: var(--tile-size);
             width: 50px;
@@ -144,28 +151,28 @@
         .dot-a { width: 8px; height: 8px; background: #e74c3c; border-radius: 50%; }
         .dot-b { width: 8px; height: 8px; background: #3498db; border-radius: 50%; }
 
-        /* === 4. 当前状态栏 === */
-        #status-bar {
+        /* === 4. 状态栏 & 输入区 === */
+        #status-area {
+            background: #fff;
+            padding-bottom: 10px;
+            flex-shrink: 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+            z-index: 10;
+        }
+        
+        #game-msg {
             text-align: center;
             font-size: 13px;
             color: #7f8c8d;
-            padding-bottom: 5px;
-            background: #fff;
+            padding: 8px 0;
             border-top: 1px solid #eee;
-            padding-top: 10px;
         }
-        #current-count { color: #3498db; font-weight: bold; font-size: 15px; }
 
-        /* === 5. 当前输入区 === */
-        #current-input-area {
-            background: #fff;
-            padding: 5px 0 15px 0;
+        #current-input-row {
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-shrink: 0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            z-index: 10;
+            padding-bottom: 5px;
         }
         
         .input-tile {
@@ -188,11 +195,11 @@
         }
         @keyframes pop { 50% { transform: scale(1.1); } }
 
-        /* === 6. 键盘 === */
+        /* === 5. 键盘 (恢复经典样式) === */
         #keyboard {
             background: #f1f2f6;
             padding: 10px;
-            padding-bottom: 25px; /* 适配 iPhone 底部条 */
+            padding-bottom: 25px;
             flex-shrink: 0;
         }
         .kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 8px; }
@@ -226,6 +233,9 @@
 
         .key-big { flex: 1.5; max-width: 80px; font-size: 14px; color: #fff; background: #95a5a6; border:none; box-shadow: 0 2px 0 #7f8c8d; }
         .key-submit { background: #2ecc71; box-shadow: 0 2px 0 #27ae60; }
+        
+        /* 禁用状态（游戏结束后键盘变灰，但不消失） */
+        .disabled-area { opacity: 0.5; pointer-events: none; }
 
         /* === 弹窗 === */
         .modal-overlay {
@@ -239,12 +249,13 @@
             background: #fff; width: 85%; max-width: 400px;
             border-radius: 12px; padding: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
         }
-        .modal h2 { margin-bottom: 10px; font-size: 18px; text-align: center; }
-        .modal p { font-size: 14px; line-height: 1.6; color: #555; margin-bottom: 8px; }
+        .modal h2 { margin-bottom: 10px; font-size: 18px; }
+        .modal p { font-size: 14px; line-height: 1.6; color: #555; margin-bottom: 8px; text-align: left; }
         .close-btn {
             display: block; width: 100%; padding: 12px;
-            background: #3498db; color: #fff; text-align: center;
+            background: #3498db; color: #fff; 
             border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer;
         }
     </style>
@@ -252,12 +263,18 @@
 <body>
 
 <header>
-    <div class="header-btn" onclick="confirmRestart()">
-        <span>🔄</span> 重新开始
+    <div class="header-left">
+        <h1></h1>
+        <a href="https://telepa.github.io"><h1>作者主页</h1></a>
+        <div class="date-tag" id="date-display">2023-XX-XX</div>
     </div>
     <h1>珠玑妙算 <span style="font-weight:normal; font-size:12px; color:#999;">汉字版</span></h1>
-    <div class="header-btn" onclick="toggleModal()">
-        规则 <span>❓</span>
+    <div style="display:flex; align-items:center;">
+        <div class="timer-container">
+            <div>下期更新</div>
+            <div class="timer-val" id="countdown">00:00:00</div>
+        </div>
+        <div class="header-btn" onclick="toggleModal()">❓</div>
     </div>
 </header>
 
@@ -279,16 +296,18 @@
     <div id="board"></div>
 </div>
 
-<div id="status-bar">
-    第 <span id="current-count">1</span> 次猜测
-</div>
-
-<div id="current-input-area">
-    <div class="input-tile" id="in-0"></div>
-    <div class="input-tile" id="in-1"></div>
-    <div class="input-tile" id="in-2"></div>
-    <div class="input-tile" id="in-3"></div>
-    <div class="input-tile" id="in-4"></div>
+<div id="status-area">
+    <div id="game-msg">
+        第 <span id="current-count" style="color:#3498db; font-weight:bold;">1</span> 次猜测
+    </div>
+    
+    <div id="current-input-row">
+        <div class="input-tile" id="in-0"></div>
+        <div class="input-tile" id="in-1"></div>
+        <div class="input-tile" id="in-2"></div>
+        <div class="input-tile" id="in-3"></div>
+        <div class="input-tile" id="in-4"></div>
+    </div>
 </div>
 
 <div id="keyboard">
@@ -310,9 +329,11 @@
     </div>
 </div>
 
+
 <div class="modal-overlay open" id="ruleModal">
     <div class="modal">
         <h2>📜 游戏规则</h2>
+        <p>0. <strong>每天只有一局,请勿沉迷。</strong></p>
         <p>1. 目标：猜出系统生成的 5 个颜色序列。</p>
         <p>2. 颜色范围：<strong>红 黄 蓝 绿 橙 紫 黑 白</strong> (颜色可以重复)。</p>
         <p>3. 每次提交后，你会收到线索：</p>
@@ -337,35 +358,90 @@
     
     let secretCode = [];
     let currentInput = [];
-    let historyCount = 0; // 记录总次数
+    let history = []; 
     let isGameOver = false;
+    let todayStr = "";
+
+    // === 核心逻辑: 每日伪随机数 ===
+    function seededRandom(seed) {
+        var t = seed + 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+
+    function getTodayString() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}${month}${day}`;
+    }
 
     window.onload = function() {
-        startNewGame();
-    };
-
-    function startNewGame() {
+        todayStr = getTodayString();
+        document.getElementById('date-display').innerText = new Date().toLocaleDateString();
+        
+        let seed = parseInt(todayStr); 
         secretCode = [];
         for(let i=0; i<CODE_LENGTH; i++) {
-            secretCode.push(COLORS[Math.floor(Math.random() * COLORS.length)]);
+            let rand = seededRandom(seed + i * 100); 
+            secretCode.push(COLORS[Math.floor(rand * COLORS.length)]);
         }
-        console.log("Secret:", secretCode);
+        console.log("今日答案:", secretCode);
+
+        loadGame();
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 首次访问显示规则
+        if(!localStorage.getItem('mm_has_visited_classic')) {
+            toggleModal();
+            localStorage.setItem('mm_has_visited_classic', 'true');
+        }
+    };
+
+    function loadGame() {
+        const savedDate = localStorage.getItem('mm_last_date');
         
-        currentInput = [];
-        historyCount = 0;
-        isGameOver = false;
-        
-        document.getElementById('board').innerHTML = '';
-        updateInputDisplay();
+        if (savedDate !== todayStr) {
+            localStorage.removeItem('mm_history');
+            localStorage.removeItem('mm_gamestate');
+            localStorage.setItem('mm_last_date', todayStr);
+            history = [];
+            isGameOver = false;
+        } else {
+            const savedHistory = JSON.parse(localStorage.getItem('mm_history'));
+            if (savedHistory) {
+                history = savedHistory;
+                history.forEach((item, index) => {
+                    addHistoryRow(item.guess, item.res, index + 1);
+                });
+            }
+            const state = localStorage.getItem('mm_gamestate');
+            if (state === 'won') {
+                gameWin(false);
+            }
+        }
         updateCountDisplay();
     }
 
-    function confirmRestart() {
-        if(confirm("确定要放弃当前进度重新开始吗？")) {
-            startNewGame();
-        }
+    function updateCountdown() {
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setHours(24, 0, 0, 0); 
+        
+        const diff = tomorrow - now;
+        
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        const pad = (n) => String(n).padStart(2, '0');
+        document.getElementById('countdown').innerText = `${pad(h)}:${pad(m)}:${pad(s)}`;
     }
 
+    // === 交互 ===
     function typeKey(color) {
         if(isGameOver) return;
         if(currentInput.length < CODE_LENGTH) {
@@ -398,40 +474,55 @@
     }
 
     function updateCountDisplay() {
-        // 显示下一次猜测的序号 (历史记录数 + 1)
-        document.getElementById('current-count').innerText = historyCount + 1;
+        if (!isGameOver) {
+            document.getElementById('current-count').innerText = history.length + 1;
+        } else {
+            document.getElementById('game-msg').innerText = "今日挑战已完成";
+            document.getElementById('game-msg').style.color = "#27ae60";
+            document.getElementById('game-msg').style.fontWeight = "bold";
+        }
     }
 
     function submitGuess() {
         if(isGameOver) return;
         
         if(currentInput.length !== CODE_LENGTH) {
-            // 简单震动
             if(navigator.vibrate) navigator.vibrate(50);
             return;
         }
 
-        historyCount++;
         const guess = [...currentInput];
         const res = calculateResult(guess, secretCode);
         
-        addHistoryRow(guess, res, historyCount);
+        history.push({guess: guess, res: res});
+        localStorage.setItem('mm_history', JSON.stringify(history));
+        
+        addHistoryRow(guess, res, history.length);
         
         if(res.a === CODE_LENGTH) {
-            isGameOver = true;
-            document.getElementById('status-bar').innerText = "🎉 游戏胜利！";
-            document.getElementById('status-bar').style.color = "#2ecc71";
-            document.getElementById('status-bar').style.fontWeight = "bold";
-            setTimeout(() => {
-                alert(`恭喜！你猜对了！\n总共用了 ${historyCount} 次。\n答案是：${secretCode.join('')}`);
-            }, 100);
+            gameWin(true);
         } else {
             currentInput = [];
             updateInputDisplay();
             updateCountDisplay();
-            // 自动滚动到底部
             const container = document.getElementById('board-container');
             container.scrollTop = container.scrollHeight;
+        }
+    }
+
+    function gameWin(showConfetti) {
+        isGameOver = true;
+        localStorage.setItem('mm_gamestate', 'won');
+        updateCountDisplay();
+        
+        // 键盘变灰，但不消失（经典逻辑）
+        document.getElementById('keyboard').classList.add('disabled-area');
+        document.getElementById('current-input-row').style.opacity = '0.5';
+
+        if(showConfetti) {
+            setTimeout(() => {
+                alert(`🎉 恭喜！今日挑战成功！\n\n答案是：${secretCode.join('')}\n你用了 ${history.length} 次。\n\n请明天再来挑战！`);
+            }, 100);
         }
     }
 
@@ -440,13 +531,11 @@
         const row = document.createElement('div');
         row.className = 'row';
         
-        // 1. 序号
         const idxDiv = document.createElement('div');
         idxDiv.className = 'row-index';
         idxDiv.innerText = idx;
         row.appendChild(idxDiv);
 
-        // 2. 汉字块
         guess.forEach(c => {
             const tile = document.createElement('div');
             tile.className = `tile t-${c}`;
@@ -454,7 +543,6 @@
             row.appendChild(tile);
         });
 
-        // 3. 结果
         const resBox = document.createElement('div');
         resBox.className = 'result-box';
         resBox.innerHTML = `
