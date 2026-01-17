@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>珠玑妙算 - 汉字版</title>
+    <style>
+        :root {
+            --bg-color: #f7f8f9;
+            --tile-size: 50px;
+            --border-default: #d3d6da;
+            
+            /* 颜色定义 */
+            --c-red: #e74c3c;
+            --c-yellow: #f1c40f;
+            --c-blue: #3498db;
+            --c-green: #27ae60;
+            --c-orange: #e67e22;
+            --c-purple: #9b59b6;
+            --c-black: #2c3e50;
+            --c-white: #95a5a6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* === 1. 顶部 Header (增加重开按钮) === */
+        header {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        h1 { font-size: 18px; font-weight: 800; color: #2c3e50; }
+        
+        /* 顶部按钮样式 */
+        .header-btn {
+            font-size: 14px;
+            color: #3498db;
+            cursor: pointer;
+            padding: 5px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .header-btn:active { opacity: 0.6; }
+
+        /* === 2. 颜色图例 === */
+        #legend-bar {
+            background: #fff;
+            padding: 8px 10px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            font-size: 12px;
+            color: #7f8c8d;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+        }
+        .legend-list span { font-weight: bold; margin: 0 1px; }
+
+        /* === 3. 游戏历史区域 === */
+        #board-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .row {
+            display: flex;
+            align-items: center; /* 垂直居中 */
+            gap: 6px;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* 序号显示 */
+        .row-index {
+            width: 25px;
+            text-align: right;
+            font-size: 14px;
+            color: #bdc3c7;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        /* 汉字方块 */
+        .tile {
+            width: var(--tile-size);
+            height: var(--tile-size);
+            border: 2px solid var(--border-default);
+            border-radius: 6px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* 颜色样式 */
+        .t-红 { color: var(--c-red); border-color: var(--c-red); background: #fff5f5; }
+        .t-黄 { color: var(--c-yellow); border-color: var(--c-yellow); background: #fef9e7; }
+        .t-蓝 { color: var(--c-blue); border-color: var(--c-blue); background: #f0f8ff; }
+        .t-绿 { color: var(--c-green); border-color: var(--c-green); background: #f0fbf4; }
+        .t-橙 { color: var(--c-orange); border-color: var(--c-orange); background: #fff8f0; }
+        .t-紫 { color: var(--c-purple); border-color: var(--c-purple); background: #fbf0ff; }
+        .t-黑 { color: var(--c-black); border-color: var(--c-black); background: #f2f3f4; }
+        .t-白 { color: var(--c-white); border-color: #bdc3c7; background: #fff; }
+
+        /* 结果展示 */
+        .result-box {
+            height: var(--tile-size);
+            width: 50px;
+            margin-left: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .res-line { display: flex; align-items: center; gap: 4px; }
+        .dot-a { width: 8px; height: 8px; background: #e74c3c; border-radius: 50%; }
+        .dot-b { width: 8px; height: 8px; background: #3498db; border-radius: 50%; }
+
+        /* === 4. 当前状态栏 === */
+        #status-bar {
+            text-align: center;
+            font-size: 13px;
+            color: #7f8c8d;
+            padding-bottom: 5px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        #current-count { color: #3498db; font-weight: bold; font-size: 15px; }
+
+        /* === 5. 当前输入区 === */
+        #current-input-area {
+            background: #fff;
+            padding: 5px 0 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            z-index: 10;
+        }
+        
+        .input-tile {
+            width: 48px;
+            height: 48px;
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            margin: 0 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            background: #fdfdfd;
+        }
+        .input-tile.filled {
+            border-style: solid;
+            animation: pop 0.2s;
+        }
+        @keyframes pop { 50% { transform: scale(1.1); } }
+
+        /* === 6. 键盘 === */
+        #keyboard {
+            background: #f1f2f6;
+            padding: 10px;
+            padding-bottom: 25px; /* 适配 iPhone 底部条 */
+            flex-shrink: 0;
+        }
+        .kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 8px; }
+        
+        .key {
+            height: 48px;
+            flex: 1;
+            max-width: 50px;
+            background: #fff;
+            border-radius: 5px;
+            border: 1px solid #dcdcdc;
+            box-shadow: 0 2px 0 #cdcdcd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+        .key:active { transform: translateY(2px); box-shadow: none; }
+        
+        .k-红 { color: var(--c-red); }
+        .k-黄 { color: var(--c-yellow); }
+        .k-蓝 { color: var(--c-blue); }
+        .k-绿 { color: var(--c-green); }
+        .k-橙 { color: var(--c-orange); }
+        .k-紫 { color: var(--c-purple); }
+        .k-黑 { color: var(--c-black); }
+        .k-白 { color: var(--c-white); border: 1px solid #bdc3c7; }
+
+        .key-big { flex: 1.5; max-width: 80px; font-size: 14px; color: #fff; background: #95a5a6; border:none; box-shadow: 0 2px 0 #7f8c8d; }
+        .key-submit { background: #2ecc71; box-shadow: 0 2px 0 #27ae60; }
+
+        /* === 弹窗 === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 999;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .modal {
+            background: #fff; width: 85%; max-width: 400px;
+            border-radius: 12px; padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal h2 { margin-bottom: 10px; font-size: 18px; text-align: center; }
+        .modal p { font-size: 14px; line-height: 1.6; color: #555; margin-bottom: 8px; }
+        .close-btn {
+            display: block; width: 100%; padding: 12px;
+            background: #3498db; color: #fff; text-align: center;
+            border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-btn" onclick="confirmRestart()">
+        <span>🔄</span> 重新开始
+    </div>
+    <h1>珠玑妙算 <span style="font-weight:normal; font-size:12px; color:#999;">汉字版</span></h1>
+    <div class="header-btn" onclick="toggleModal()">
+        规则 <span>❓</span>
+    </div>
+</header>
+
+<div id="legend-bar">
+    <span>可选颜色:</span>
+    <div class="legend-dots">
+        <span style="color:var(--c-red)">红</span>
+        <span style="color:var(--c-yellow)">黄</span>
+        <span style="color:var(--c-blue)">蓝</span>
+        <span style="color:var(--c-green)">绿</span>
+        <span style="color:var(--c-orange)">橙</span>
+        <span style="color:var(--c-purple)">紫</span>
+        <span style="color:var(--c-black)">黑</span>
+        <span style="color:var(--c-white)">白</span>
+    </div>
+</div>
+
+<div id="board-container">
+    <div id="board"></div>
+</div>
+
+<div id="status-bar">
+    第 <span id="current-count">1</span> 次猜测
+</div>
+
+<div id="current-input-area">
+    <div class="input-tile" id="in-0"></div>
+    <div class="input-tile" id="in-1"></div>
+    <div class="input-tile" id="in-2"></div>
+    <div class="input-tile" id="in-3"></div>
+    <div class="input-tile" id="in-4"></div>
+</div>
+
+<div id="keyboard">
+    <div class="kb-row">
+        <div class="key k-红" onclick="typeKey('红')">红</div>
+        <div class="key k-黄" onclick="typeKey('黄')">黄</div>
+        <div class="key k-蓝" onclick="typeKey('蓝')">蓝</div>
+        <div class="key k-绿" onclick="typeKey('绿')">绿</div>
+    </div>
+    <div class="kb-row">
+        <div class="key k-橙" onclick="typeKey('橙')">橙</div>
+        <div class="key k-紫" onclick="typeKey('紫')">紫</div>
+        <div class="key k-黑" onclick="typeKey('黑')">黑</div>
+        <div class="key k-白" onclick="typeKey('白')">白</div>
+    </div>
+    <div class="kb-row">
+        <div class="key key-big" onclick="delKey()">删除</div>
+        <div class="key key-big key-submit" onclick="submitGuess()">提交</div>
+    </div>
+</div>
+
+<div class="modal-overlay open" id="ruleModal">
+    <div class="modal">
+        <h2>📜 游戏规则</h2>
+        <p>1. 目标：猜出系统生成的 5 个颜色序列。</p>
+        <p>2. 颜色范围：<strong>红 黄 蓝 绿 橙 紫 黑 白</strong> (颜色可以重复)。</p>
+        <p>3. 每次提交后，你会收到线索：</p>
+        <div style="background:#f9f9f9; padding:8px; border-radius:5px; font-size:13px;">
+            <div style="display:flex; align-items:center; margin-bottom:4px;">
+                <span style="width:10px; height:10px; background:#e74c3c; border-radius:50%; margin-right:6px;"></span>
+                <strong>A (红色点)</strong>：汉字和位置都对。
+            </div>
+            <div style="display:flex; align-items:center;">
+                <span style="width:10px; height:10px; background:#3498db; border-radius:50%; margin-right:6px;"></span>
+                <strong>B (蓝色点)</strong>：汉字对了，但位置不对。
+            </div>
+        </div>
+        <p style="font-size:12px; color:#999; margin-top:8px;">* 例子：答案是[红红蓝]，你猜[蓝红白]。<br>中间的红位置对(1A)，蓝颜色对但位置错(1B)。提示 1A1B。</p>
+        <div class="close-btn" onclick="toggleModal()">开始游戏</div>
+    </div>
+</div>
+
+<script>
+    const COLORS = ['红', '黄', '蓝', '绿', '橙', '紫', '黑', '白'];
+    const CODE_LENGTH = 5;
+    
+    let secretCode = [];
+    let currentInput = [];
+    let historyCount = 0; // 记录总次数
+    let isGameOver = false;
+
+    window.onload = function() {
+        startNewGame();
+    };
+
+    function startNewGame() {
+        secretCode = [];
+        for(let i=0; i<CODE_LENGTH; i++) {
+            secretCode.push(COLORS[Math.floor(Math.random() * COLORS.length)]);
+        }
+        console.log("Secret:", secretCode);
+        
+        currentInput = [];
+        historyCount = 0;
+        isGameOver = false;
+        
+        document.getElementById('board').innerHTML = '';
+        updateInputDisplay();
+        updateCountDisplay();
+    }
+
+    function confirmRestart() {
+        if(confirm("确定要放弃当前进度重新开始吗？")) {
+            startNewGame();
+        }
+    }
+
+    function typeKey(color) {
+        if(isGameOver) return;
+        if(currentInput.length < CODE_LENGTH) {
+            currentInput.push(color);
+            updateInputDisplay();
+        }
+    }
+
+    function delKey() {
+        if(isGameOver) return;
+        if(currentInput.length > 0) {
+            currentInput.pop();
+            updateInputDisplay();
+        }
+    }
+
+    function updateInputDisplay() {
+        for(let i=0; i<CODE_LENGTH; i++) {
+            const el = document.getElementById(`in-${i}`);
+            const color = currentInput[i];
+            
+            el.className = 'input-tile';
+            el.innerText = '';
+            
+            if(color) {
+                el.innerText = color;
+                el.classList.add(`t-${color}`, 'filled');
+            }
+        }
+    }
+
+    function updateCountDisplay() {
+        // 显示下一次猜测的序号 (历史记录数 + 1)
+        document.getElementById('current-count').innerText = historyCount + 1;
+    }
+
+    function submitGuess() {
+        if(isGameOver) return;
+        
+        if(currentInput.length !== CODE_LENGTH) {
+            // 简单震动
+            if(navigator.vibrate) navigator.vibrate(50);
+            return;
+        }
+
+        historyCount++;
+        const guess = [...currentInput];
+        const res = calculateResult(guess, secretCode);
+        
+        addHistoryRow(guess, res, historyCount);
+        
+        if(res.a === CODE_LENGTH) {
+            isGameOver = true;
+            document.getElementById('status-bar').innerText = "🎉 游戏胜利！";
+            document.getElementById('status-bar').style.color = "#2ecc71";
+            document.getElementById('status-bar').style.fontWeight = "bold";
+            setTimeout(() => {
+                alert(`恭喜！你猜对了！\n总共用了 ${historyCount} 次。\n答案是：${secretCode.join('')}`);
+            }, 100);
+        } else {
+            currentInput = [];
+            updateInputDisplay();
+            updateCountDisplay();
+            // 自动滚动到底部
+            const container = document.getElementById('board-container');
+            container.scrollTop = container.scrollHeight;
+        }
+    }
+
+    function addHistoryRow(guess, res, idx) {
+        const board = document.getElementById('board');
+        const row = document.createElement('div');
+        row.className = 'row';
+        
+        // 1. 序号
+        const idxDiv = document.createElement('div');
+        idxDiv.className = 'row-index';
+        idxDiv.innerText = idx;
+        row.appendChild(idxDiv);
+
+        // 2. 汉字块
+        guess.forEach(c => {
+            const tile = document.createElement('div');
+            tile.className = `tile t-${c}`;
+            tile.innerText = c;
+            row.appendChild(tile);
+        });
+
+        // 3. 结果
+        const resBox = document.createElement('div');
+        resBox.className = 'result-box';
+        resBox.innerHTML = `
+            <div class="res-line" style="color:#e74c3c">
+                <span class="dot-a"></span> ${res.a} A
+            </div>
+            <div class="res-line" style="color:#3498db">
+                <span class="dot-b"></span> ${res.b} B
+            </div>
+        `;
+        row.appendChild(resBox);
+        board.appendChild(row);
+    }
+
+    function calculateResult(guess, secret) {
+        let countA = 0;
+        let matchedIdx = new Array(CODE_LENGTH).fill(false);
+        let secretUsed = new Array(CODE_LENGTH).fill(false);
+
+        for(let i=0; i<CODE_LENGTH; i++) {
+            if(guess[i] === secret[i]) {
+                countA++;
+                matchedIdx[i] = true;
+                secretUsed[i] = true;
+            }
+        }
+        
+        let countB = 0;
+        for(let i=0; i<CODE_LENGTH; i++) {
+            if(!matchedIdx[i]) {
+                for(let j=0; j<CODE_LENGTH; j++) {
+                    if(!secretUsed[j] && secret[j] === guess[i]) {
+                        countB++;
+                        secretUsed[j] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return {a: countA, b: countB};
+    }
+
+    function toggleModal() {
+        const m = document.getElementById('ruleModal');
+        m.classList.toggle('open');
+    }
+</script>
+
+</body>
+</html>
